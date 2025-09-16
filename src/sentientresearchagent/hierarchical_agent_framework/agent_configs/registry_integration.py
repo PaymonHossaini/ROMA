@@ -10,7 +10,6 @@ from loguru import logger
 from pathlib import Path
 
 from .config_loader import AgentConfigLoader, load_agent_configs
-from .agent_factory import AgentFactory, create_agents_from_config
 from sentientresearchagent.hierarchical_agent_framework.agents.registry import AgentRegistry
 from sentientresearchagent.hierarchical_agent_framework.agents.base_adapter import BaseAdapter
 from sentientresearchagent.hierarchical_agent_framework.node.task_node import TaskNode
@@ -28,9 +27,15 @@ class RegistryIntegrator:
             agent_registry: The AgentRegistry instance to populate.
             config_loader: Optional config loader. If None, creates a default one.
         """
+        # Assign instance attributes
         self.agent_registry = agent_registry
         self.config_loader = config_loader or AgentConfigLoader()
+
+        # Lazy import to avoid circular import at module import time
+        from .agent_factory import AgentFactory  # imported here to break circular dependency
         self.factory = AgentFactory(self.config_loader)
+
+        # Map of created agents (name -> info dict)
         self.created_agents: Dict[str, Dict[str, Any]] = {}
         
     def load_and_register_agents(self) -> Dict[str, Any]:
@@ -194,17 +199,26 @@ class RegistryIntegrator:
             # Load raw config to get agents section
             from omegaconf import OmegaConf
             profile_config = OmegaConf.load(profile_config_raw)
-            
-            # Create any profile-specific agents
+
+            # First, attempt to create any explicit agents defined inside the profile YAML
             profile_agents = self.factory.create_agents_for_profile(profile_config)
-            
+
+            # If none were defined directly, try interpreting the profile as a blueprint
+            if not profile_agents:
+                try:
+                    logger.info(f"No explicit 'agents' in profile; attempting blueprint-based creation for {profile_name}")
+                    blueprint = profile_loader.load_profile(profile_name)
+                    profile_agents = self.factory.create_agents_from_blueprint(blueprint)
+                except Exception as e:
+                    logger.error(f"Blueprint-based agent creation failed for profile {profile_name}: {e}")
+
             if profile_agents:
                 logger.info(f"📋 Created {len(profile_agents)} profile-specific agents")
-                
+
                 # Register the profile-specific agents
                 self.created_agents.update(profile_agents)
                 registration_results = self._register_agents_in_instance_registry()
-                
+
                 logger.info(f"✅ Profile {profile_name} integration completed")
                 return registration_results
             else:

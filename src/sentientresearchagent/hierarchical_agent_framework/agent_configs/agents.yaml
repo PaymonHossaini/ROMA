@@ -137,7 +137,7 @@ agents:
       model_id: "models/gpt-oss-120b-F16.gguf"
     prompt_source: "prompts.executor_prompts.SEARCH_EXECUTOR_SYSTEM_MESSAGE"
     response_model: "WebSearchResultsOutput"
-    tools: ["DuckDuckGoTools", "WikipediaTools", "web_search"]
+    tools: ["DuckDuckGoTools", "WikipediaTools"]
     registration:
       named_keys: ["SearchExecutor", "default_search_executor"]
     enabled: true

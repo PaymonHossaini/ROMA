@@ -10,7 +10,7 @@ from sentientresearchagent.hierarchical_agent_framework.agents.utils import get_
 from .hitl_coordinator import HITLCoordinator
 # Corrected import: 'apply_blueprint_to_node' is in 'registry_integration', not 'inode_handler'
 from .inode_handler import ProcessorContext
-from ..agent_configs.registry_integration import apply_blueprint_to_node
+from sentientresearchagent.hierarchical_agent_framework.agent_configs.blueprint_utils import apply_blueprint_to_node
 # TraceManager is now accessed via ProcessorContext instead of global singleton
 
 if TYPE_CHECKING:

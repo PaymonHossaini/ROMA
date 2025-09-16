@@ -931,6 +931,81 @@ class AgentFactory:
         
         return created_agents
 
+    def create_agents_from_blueprint(self, blueprint: 'AgentBlueprint') -> Dict[str, Dict[str, Any]]:
+        """
+        Create agents referenced by an AgentBlueprint by selecting their definitions
+        from the main agents.yaml configuration and instantiating only those.
+
+        Args:
+            blueprint: AgentBlueprint instance containing named agent references
+
+        Returns:
+            Dictionary mapping agent names to created agent info
+        """
+        created_agents: Dict[str, Dict[str, Any]] = {}
+
+        try:
+            # Load validated agents.yaml (Pydantic model)
+            validated_agents_config = self.config_loader.get_validated_config()
+        except Exception as e:
+            logger.error(f"Failed to load agents.yaml for blueprint-based creation: {e}")
+            return created_agents
+
+        # Collect referenced agent names from the blueprint
+        referenced_names = set()
+        try:
+            # Planner/executor/aggregator mappings use TaskType enums as keys
+            referenced_names.update([v for v in blueprint.planner_adapter_names.values() if v])
+            referenced_names.update([v for v in blueprint.executor_adapter_names.values() if v])
+            referenced_names.update([v for v in blueprint.aggregator_adapter_names.values() if v])
+
+            # Other named fields
+            for attr in [
+                'root_planner_adapter_name', 'root_aggregator_adapter_name',
+                'atomizer_adapter_name', 'aggregator_adapter_name', 'plan_modifier_adapter_name',
+                'default_planner_adapter_name', 'default_executor_adapter_name'
+            ]:
+                val = getattr(blueprint, attr, None)
+                if val:
+                    referenced_names.add(val)
+        except Exception:
+            logger.debug("Failed to extract referenced agent names from blueprint")
+
+        if not referenced_names:
+            logger.info("No agent names referenced in blueprint; nothing to create")
+            return created_agents
+
+        logger.info(f"Creating agents from blueprint: will attempt to create {len(referenced_names)} referenced agents")
+
+        # Iterate through validated agent definitions and create those that match
+        for agent_def in validated_agents_config.agents:
+            try:
+                if agent_def.name in referenced_names:
+                    if not getattr(agent_def, 'enabled', True):
+                        logger.info(f"⏭️  Skipping disabled agent from blueprint: {agent_def.name}")
+                        continue
+
+                    # create_agent expects a dict/DictConfig or AgentConfig; pass a plain dict to avoid
+                    # attribute vs mapping access issues in its implementation
+                    try:
+                        # Convert Pydantic AgentConfig to an OmegaConf DictConfig so that
+                        # create_agent sees the same shape as when loading agents.yaml
+                        from omegaconf import OmegaConf
+                        agent_payload = agent_def.model_dump() if hasattr(agent_def, 'model_dump') else dict(agent_def)
+                        agent_cfg = OmegaConf.create(agent_payload)
+                    except Exception:
+                        # Fallback to a plain dict
+                        agent_cfg = agent_def.model_dump() if hasattr(agent_def, 'model_dump') else dict(agent_def)
+
+                    agent_info = self.create_agent(agent_cfg)
+                    created_agents[agent_def.name] = agent_info
+                    logger.info(f"✅ Created agent from blueprint: {agent_def.name}")
+            except Exception as e:
+                logger.error(f"Failed to create agent {getattr(agent_def, 'name', '<unknown>')} from blueprint: {e}")
+                continue
+
+        return created_agents
+
     def validate_blueprint_agents(self, blueprint: 'AgentBlueprint', agent_registry: AgentRegistry) -> Dict[str, Any]:
         """
         Validate that all agents referenced in a blueprint exist in the given registry instance.

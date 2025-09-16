@@ -14,7 +14,7 @@ from sentientresearchagent.hierarchical_agent_framework.context.agent_io_models 
 )
 # REMOVED incorrect imports of get_agent_adapter and NAMED_AGENTS
 from sentientresearchagent.hierarchical_agent_framework.agents.registry import AgentRegistry
-from sentientresearchagent.hierarchical_agent_framework.agents.base_adapter import BaseAdapter
+# from sentientresearchagent.hierarchical_agent_framework.agents.base_adapter import BaseAdapter
 # Corrected imports:
 from sentientresearchagent.hierarchical_agent_framework.context.context_builder import (
     resolve_context_for_agent
