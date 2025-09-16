@@ -3,8 +3,11 @@
 
 # LLM Infrastructure (used by your AgnoAgents)
 llm:
-  provider: "openrouter"  # Since you're using OpenRouter
-  api_key: "your-openrouter-key"  # Or OPENROUTER_API_KEY env var
+  provider: "openai"
+  model_id: "models/gpt-oss-120b-F16.gguf"
+  api_base: "http://localhost:8080/v1"
+  api_key: "helloworld" 
+  # api_key: ""  # No API key needed for local LLM endpoint
   timeout: 300.0  # Increased to 5 minutes for complex code execution and reasoning
   max_retries: 3
 

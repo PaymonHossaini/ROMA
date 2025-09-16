@@ -28,8 +28,8 @@ agents:
     adapter_class: "PlannerAdapter"
     description: "Specialized planner optimized for search-focused research tasks with date awareness and parallel execution"
     model:
-      provider: "litellm"
-      model_id: "openrouter/anthropic/claude-sonnet-4"  # Switched from slow o3 model for 10x faster planning
+      provider: "openai"
+      model_id: "models/gpt-oss-120b-F16.gguf"
       temperature: 0.35      
     # agno_params:
     #   reasoning: true
@@ -47,8 +47,8 @@ agents:
     adapter_class: "PlannerAdapter"
     description: "Specialized planner optimized for search-focused research tasks with date awareness and parallel execution"
     model:
-      provider: "litellm"
-      model_id: "openrouter/anthropic/claude-sonnet-4"  # Switched from slow o3 model for 10x faster planning
+      provider: "openai"
+      model_id: "models/gpt-oss-120b-F16.gguf"
       temperature: 0.35
     # agno_params:
     #   reasoning: true
@@ -67,8 +67,8 @@ agents:
     adapter_class: "PlannerAdapter"
     description: "Specialized planner optimized for search-focused research tasks with date awareness and parallel execution"
     model:
-      provider: "litellm"
-      model_id: "openrouter/anthropic/claude-sonnet-4"  # Switched from slow o3 model for 10x faster planning
+      provider: "openai"
+      model_id: "models/gpt-oss-120b-F16.gguf"
       temperature: 0.35
       # temperature: 0.7
     # agno_params:
@@ -88,8 +88,8 @@ agents:
     adapter_class: "PlannerAdapter"
     description: "Master planner specialized in high-level research project decomposition and strategy"
     model:
-      provider: "litellm"
-      model_id: "openrouter/anthropic/claude-sonnet-4"  # Switched from slow o3 model for 10x faster planning
+      provider: "openai"
+      model_id: "models/gpt-oss-120b-F16.gguf"
       temperature: 0.35
       # temperature: 0.7
     prompt_source: "prompts.planner_prompts.DEEP_RESEARCH_PLANNER_SYSTEM_MESSAGE"
@@ -106,9 +106,12 @@ agents:
     adapter_class: "PlannerAdapter"
     description: "Master planner specialized in high-level research project decomposition and strategy"
     model:
-      provider: "litellm"
-      model_id: "openrouter/anthropic/claude-sonnet-4"  # Switched from slow o3 model for 10x faster planning
-      temperature: 0.3
+      provider: "openai"
+      model_id: "models/gpt-oss-120b-F16.gguf"
+      # api_base: "http://localhost:8080/v1"
+      # provider: "litellm"
+      # model_id: "openrouter/anthropic/claude-sonnet-4"  # Switched from slow o3 model for 10x faster planning
+      # temperature: 0.3
     # agno_params:
     #   reasoning: true
       # temperature: 0.7
@@ -131,21 +134,21 @@ agents:
     description: "LLM-based search executor with web search tools"
     model:
       provider: "openai"
-      model_id: "gpt-4.1"
+      model_id: "models/gpt-oss-120b-F16.gguf"
     prompt_source: "prompts.executor_prompts.SEARCH_EXECUTOR_SYSTEM_MESSAGE"
     response_model: "WebSearchResultsOutput"
     tools: ["DuckDuckGoTools", "WikipediaTools", "web_search"]
     registration:
       named_keys: ["SearchExecutor", "default_search_executor"]
-    enabled: false
+    enabled: true
 
   - name: "BasicReasoningExecutor"
     type: "executor"
     adapter_class: "ExecutorAdapter"
     description: "Performs Analysis and Synthesis of information"
     model:
-      provider: "litellm"
-      model_id: "openrouter/google/gemini-2.5-pro"  # Switched from slow o3 model for faster execution
+      provider: "openai"
+      model_id: "models/gpt-oss-120b-F16.gguf"
     # agno_params:
     #   reasoning: true
     prompt_source: "prompts.executor_prompts.REASONING_EXECUTOR_SYSTEM_MESSAGE"
@@ -166,8 +169,8 @@ agents:
     adapter_class: "ExecutorAdapter"
     description: "Writes detailed reports based on provided context"
     model:
-      provider: "litellm"
-      model_id: "openrouter/google/gemini-2.5-pro"
+      provider: "openai"
+      model_id: "models/gpt-oss-120b-F16.gguf"
     # agno_params:
     #   reasoning: true
     prompt_source: "prompts.executor_prompts.BASIC_REPORT_WRITER_SYSTEM_MESSAGE"
@@ -183,8 +186,8 @@ agents:
     adapter_class: "ExecutorAdapter"
     description: "Intelligent searcher that combines AI-powered search with Wikipedia"
     model:
-      provider: "litellm"
-      model_id: "openrouter/google/gemini-2.5-pro"  # Switched from slow o3 model for faster search
+      provider: "openai"
+      model_id: "models/gpt-oss-120b-F16.gguf"
     # agno_params:
     #   reasoning: true
     prompt_source: "prompts.executor_prompts.SMART_WEB_SEARCHER_SYSTEM_MESSAGE"
@@ -215,7 +218,7 @@ agents:
         - action_verb: "execute"
           task_type: "SEARCH"
       named_keys: ["OpenAICustomSearcher", "default_openai_searcher"]
-    enabled: true
+    enabled: false
 
   - name: "GeminiCustomSearcher"
     type: "custom_search"
@@ -254,8 +257,8 @@ agents:
     adapter_class: "AggregatorAdapter"
     description: "Synthesizes results from multiple child tasks"
     model:
-      provider: "litellm"
-      model_id: "openrouter/google/gemini-2.5-pro"
+      provider: "openai"
+      model_id: "models/gpt-oss-120b-F16.gguf"
     prompt_source: "prompts.aggregator_prompts.DEFAULT_AGGREGATOR_SYSTEM_MESSAGE"
     registration:
       action_keys:
@@ -269,8 +272,8 @@ agents:
     adapter_class: "AggregatorAdapter"
     description: "Specialized aggregator for combining search results with deduplication and relevance ranking"
     model:
-      provider: "litellm"
-      model_id: "openrouter/google/gemini-2.5-pro"
+      provider: "openai"
+      model_id: "models/gpt-oss-120b-F16.gguf"
     # agno_params:
     #   reasoning: true
     prompt_source: "prompts.aggregator_prompts.SEARCH_AGGREGATOR_SYSTEM_MESSAGE"
@@ -286,8 +289,8 @@ agents:
     adapter_class: "AggregatorAdapter"
     description: "Specialized aggregator for synthesizing analytical outputs and drawing logical conclusions"
     model:
-      provider: "litellm"
-      model_id: "openrouter/google/gemini-2.5-pro"
+      provider: "openai"
+      model_id: "models/gpt-oss-120b-F16.gguf"
     # agno_params:
     #   reasoning: true
     prompt_source: "prompts.aggregator_prompts.THINK_AGGREGATOR_SYSTEM_MESSAGE"
@@ -303,8 +306,8 @@ agents:
     adapter_class: "AggregatorAdapter"
     description: "Specialized aggregator for combining written content with focus on narrative flow and coherence"
     model:
-      provider: "litellm"
-      model_id: "openrouter/google/gemini-2.5-pro"
+      provider: "openai"
+      model_id: "models/gpt-oss-120b-F16.gguf"
     prompt_source: "prompts.aggregator_prompts.WRITE_AGGREGATOR_SYSTEM_MESSAGE"
     registration:
       action_keys:
@@ -318,8 +321,8 @@ agents:
     adapter_class: "AggregatorAdapter"
     description: "Master aggregator for root-level research tasks with executive synthesis and strategic recommendations"
     model:
-      provider: "litellm"
-      model_id: "openrouter/google/gemini-2.5-pro"
+      provider: "openai"
+      model_id: "models/gpt-oss-120b-F16.gguf"
     prompt_source: "prompts.aggregator_prompts.ROOT_RESEARCH_AGGREGATOR_SYSTEM_MESSAGE"
     registration:
       named_keys: ["RootResearchAggregator", "root_research_aggregator"]
@@ -330,8 +333,8 @@ agents:
     adapter_class: "AggregatorAdapter"
     description: "Master aggregator for root-level analysis tasks with decisive conclusions and strategic recommendations"
     model:
-      provider: "litellm"
-      model_id: "openrouter/google/gemini-2.5-pro"
+      provider: "openai"
+      model_id: "models/gpt-oss-120b-F16.gguf"
     # agno_params:
     #   reasoning: true
     prompt_source: "prompts.aggregator_prompts.ROOT_ANALYSIS_AGGREGATOR_SYSTEM_MESSAGE"
@@ -344,8 +347,8 @@ agents:
     adapter_class: "AggregatorAdapter"
     description: "Master aggregator for root-level general tasks with comprehensive synthesis and actionable insights"
     model:
-      provider: "litellm"
-      model_id: "openrouter/google/gemini-2.5-pro"
+      provider: "openai"
+      model_id: "models/gpt-oss-120b-F16.gguf"
     # agno_params:
     #   reasoning: true
     prompt_source: "prompts.aggregator_prompts.ROOT_GENERAL_AGGREGATOR_SYSTEM_MESSAGE"
@@ -374,7 +377,7 @@ agents:
         - action_verb: "plan"
           task_type: "WRITE"
       named_keys: ["CryptoAnalyticsPlanner", "crypto_planner"]
-    enabled: true
+    enabled: false
 
   - name: "CryptoSearchPlanner"
     type: "planner"
@@ -393,7 +396,7 @@ agents:
         - action_verb: "plan"
           task_type: "SEARCH"
       named_keys: ["CryptoSearchPlanner", "crypto_search_planner"]
-    enabled: true
+    enabled: false
 
   - name: "CryptoMarketAnalyzer"
     type: "executor"
@@ -480,7 +483,7 @@ agents:
         - action_verb: "execute"
           task_type: "THINK"
       named_keys: ["CryptoMarketAnalyzer", "crypto_analyzer"]
-    enabled: true
+    enabled: false
 
   - name: "CryptoResearchExecutor"
     type: "executor"
@@ -497,7 +500,7 @@ agents:
         - action_verb: "execute"
           task_type: "WRITE"
       named_keys: ["CryptoResearchExecutor", "crypto_writer"]
-    enabled: true
+    enabled: false
 
   - name: "CryptoAnalyticsAggregator"
     type: "aggregator"
@@ -511,7 +514,7 @@ agents:
     prompt_source: "prompts.aggregator_prompts.CRYPTO_ANALYTICS_AGGREGATOR_SYSTEM_MESSAGE"
     registration:
       named_keys: ["CryptoAnalyticsAggregator", "crypto_aggregator"]
-    enabled: true
+    enabled: false
 
   - name: "CryptoRootAggregator"
     type: "aggregator"
@@ -525,7 +528,7 @@ agents:
     prompt_source: "prompts.aggregator_prompts.CRYPTO_ROOT_AGGREGATOR_SYSTEM_MESSAGE"
     registration:
       named_keys: ["CryptoRootAggregator", "crypto_root_aggregator"]
-    enabled: true
+    enabled: false
 
   # =============================================================================
   # ATOMIZER AGENTS - Determine if tasks need further breakdown
@@ -536,8 +539,8 @@ agents:
     adapter_class: "AtomizerAdapter"
     description: "Determines if tasks are atomic or need further planning"
     model:
-      provider: "litellm"
-      model_id: "openrouter/google/gemini-2.5-flash"
+      provider: "openai"
+      model_id: "models/gpt-oss-120b-F16.gguf"
     prompt_source: "prompts.atomizer_prompts.ATOMIZER_SYSTEM_MESSAGE"
     response_model: "AtomizerOutput"
     registration:
@@ -567,7 +570,7 @@ agents:
         - action_verb: "modify_plan"
           task_type: null
       named_keys: ["PlanModifier"]
-    enabled: true
+    enabled: false
 
 # =============================================================================
 # CONFIGURATION METADATA

@@ -1,5 +1,5 @@
 from __future__ import annotations
-
+from .ddgs_search import DDGSSearchTool
 """Tools package for hierarchical agent framework.
 
 This package provides access to various toolkits and utilities for agents.
@@ -25,3 +25,7 @@ __all__ = [
     "BinanceToolkit",
     "BinanceAPIError",
 ]
+
+TOOLS = {
+    "ddg_search": DDGSSearchTool(),
+}

@@ -25,7 +25,7 @@ __all__ = [
 ]
 
 # Model provider types
-ModelProviderType = Literal["litellm", "openai", "fireworks", "fireworks_ai", "google", "gemini"]
+ModelProviderType = Literal["litellm", "openai", "fireworks", "fireworks_ai", "google", "gemini", "custom"]
 
 # Agent types
 AgentType = Literal["planner", "executor", "aggregator", "atomizer", "plan_modifier", "custom_search"]
@@ -119,6 +119,10 @@ class ModelConfig(BaseModel):
                 raise ValueError(
                     "Google/Gemini provider requires GOOGLE_API_KEY or GEMINI_API_KEY environment variable"
                 )
+        
+        elif provider == "custom":
+            # Allow bypass – rely on api_base/api_key in YAML
+            return self
         
         return self
 

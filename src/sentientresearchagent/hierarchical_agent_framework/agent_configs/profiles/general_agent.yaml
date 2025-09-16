@@ -16,7 +16,7 @@ profile:
     THINK: "EnhancedThinkPlanner"
 
   executor_adapter_names:
-    SEARCH: "OpenAICustomSearcher"
+    SEARCH: "SearchExecutor"
     THINK: "BasicReasoningExecutor"
     WRITE: "BasicReportWriter"
 

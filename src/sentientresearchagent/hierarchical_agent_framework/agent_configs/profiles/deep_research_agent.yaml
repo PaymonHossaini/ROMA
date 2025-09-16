@@ -19,7 +19,7 @@ profile:
 
   # Task-specific executors
   executor_adapter_names:
-    SEARCH: "OpenAICustomSearcher"     # Using OpenAI Custom Searcher as default
+    SEARCH: "SearchExecutor"     # 
     THINK: "BasicReasoningExecutor"         # Analysis and synthesis
     WRITE: "BasicReportWriter"         # Report generation
 
